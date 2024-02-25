@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Laba3Mobile2</string>
+    <string name="reg">Введите имя для игрока №</string>
+    <string name="who">Сейчас вводит слово</string>
+    <string name="last">Игроков осталось</string>
+
+</resources>
