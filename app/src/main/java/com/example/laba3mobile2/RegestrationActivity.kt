@@ -28,6 +28,7 @@ class RegestrationActivity : AppCompatActivity() {
         if (arguments != null) {
             playersName = Array(arguments.getInt("countOfPlayers")) { String() }
         }
+        println("sizew ${playersName.size}")
     }
 
     @SuppressLint("SetTextI18n")
@@ -36,7 +37,7 @@ class RegestrationActivity : AppCompatActivity() {
     }
 
     fun nextButtonPress(v : View){
-        if (name.text == null){
+        if (name.text.toString() == ""){
             Toast.makeText(this, "Введите имя", Toast.LENGTH_LONG).show()
         }
         else if (nomer < playersName.size){
@@ -49,13 +50,22 @@ class RegestrationActivity : AppCompatActivity() {
 
             playersName[nomer] = name.text.toString()
             nomer++
+            if (nomer == playersName.size)
+            {
+                val intent = Intent(this, GameActivity::class.java)
+                intent.putExtra("players", playersName)
+                startActivity(intent)
+                return
+            }
             name.text = null
             updateRegText(nomer + 1)
+            println(nomer)
         }
         else{
             val intent = Intent(this, GameActivity::class.java)
             intent.putExtra("players", playersName)
             startActivity(intent)
         }
+
     }
 }

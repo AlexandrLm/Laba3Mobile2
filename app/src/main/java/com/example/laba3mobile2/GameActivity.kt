@@ -26,7 +26,7 @@ class GameActivity : AppCompatActivity() {
         whoType  =findViewById(R.id.whoType)
         mainWord = findViewById(R.id.mainWordText)
 
-        val firstWord = "первое"
+        val firstWord = "first"
         letterText.text = firstWord.takeLast(1)
 
         val arguments = intent.extras
@@ -41,6 +41,7 @@ class GameActivity : AppCompatActivity() {
         else{
             Toast.makeText(this, "ERROR", Toast.LENGTH_SHORT).show()
         }
+        conter()
 
     }
 
@@ -59,6 +60,7 @@ class GameActivity : AppCompatActivity() {
                 }
                 if (count == 1){
                     players[nomer].win = true
+                    println("1 сдался")
                     //тут надо дописать выигрыш
                 }
                 else{
@@ -80,11 +82,22 @@ class GameActivity : AppCompatActivity() {
             }
         }
         whoTypeChange()
+        conter()
     }
 
     @SuppressLint("SetTextI18n")
     private fun whoTypeChange(){
         whoType.text = "Сейчас вводит слово - ${players[nomer].name}"
+    }
+    @SuppressLint("SetTextI18n")
+    private fun conter(){
+        val count : TextView = findViewById(R.id.lastText)
+        var c = 0
+        for (n in players){
+            if (!n.lose)
+                c++
+        }
+        count.text = "Игроков осталось $c"
     }
 
 }
