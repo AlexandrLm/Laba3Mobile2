@@ -1,6 +1,7 @@
 package com.example.laba3mobile2
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
@@ -64,7 +65,7 @@ class GameActivity : AppCompatActivity() {
                     if (nomer == players.size - 1){
                         nomer = 0
                     }
-                    whoType.text = "Сейчас вводит слово - ${players[nomer].name}"
+                    whoTypeChange()
                 }
                 if (count == 1){
                     players[nomer].win = true
@@ -92,6 +93,15 @@ class GameActivity : AppCompatActivity() {
         whoTypeChange()
         if(conter() == 1){
             Toast.makeText(this, "END", Toast.LENGTH_LONG).show()
+            for (n in players){
+                if(!n.lose){
+                    val intent = Intent(this, WinActivity::class.java)
+                    intent.putExtra("whoWin", "Выиграл ${n.name}")
+                    startActivity(intent)
+                    break
+                }
+            }
+
         }
     }
     @SuppressLint("SetTextI18n")
