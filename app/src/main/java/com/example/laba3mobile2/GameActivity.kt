@@ -54,7 +54,7 @@ class GameActivity : AppCompatActivity() {
                 && mainWord.text.toString().length > 2)
             {
                 if (words.contains(mainWord.text.toString())){
-                    Toast.makeText(this, "Такое слово уже было", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, "Такое слово уже было", Toast.LENGTH_SHORT).show()
                     return
                 }
                 letterText.text = mainWord.text.toString().takeLast(1)
@@ -70,7 +70,7 @@ class GameActivity : AppCompatActivity() {
                 whoTypeChange()
             }
             else{
-                Toast.makeText(this, "Не правильно введено слово", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "Не правильно введено слово", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -85,6 +85,7 @@ class GameActivity : AppCompatActivity() {
             if (n.win){
                 val intent = Intent(this, WinActivity::class.java)
                 intent.putExtra("whoWin", "Выиграл ${n.name}")
+                intent.putExtra("winData", n)
                 startActivity(intent)
                 return
             }

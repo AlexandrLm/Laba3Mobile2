@@ -16,8 +16,10 @@ class WinActivity : AppCompatActivity() {
         val whoWinT : TextView = findViewById(R.id.whoWinText)
         val arguments = intent.extras
         if (arguments != null) {
-            whoWinT.text = arguments.getString("whoWin")
+            val player = arguments.getParcelable<Player>("winData")!!
+            whoWinT.text = "Выиграл ${player.name}\n\nНаписал слов ${player.howMuchWordsType}"
         }
+
     }
 
     fun againButtonPress(v : View){
