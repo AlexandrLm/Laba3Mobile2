@@ -8,7 +8,6 @@ import android.widget.TextView
 import android.widget.Toast
 
 class MainActivity : AppCompatActivity() {
-
     private lateinit var countOfPlayers : TextView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -16,7 +15,6 @@ class MainActivity : AppCompatActivity() {
 
         countOfPlayers = findViewById(R.id.countOfPlayersText)
     }
-
     fun startButtonPress(v : View){
         if(countOfPlayers.text.toString().toInt() < 2){
             Toast.makeText(this, "Введите количество игроков больше 1", Toast.LENGTH_LONG).show()

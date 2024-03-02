@@ -11,4 +11,5 @@ class Player(_name : String) {
     }
     var lose : Boolean = false
     var win : Boolean = false
+    var howMuchWordsType : Int = 0
 }

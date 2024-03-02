@@ -21,14 +21,14 @@ class RegestrationActivity : AppCompatActivity() {
         setContentView(R.layout.activity_regestration)
 
         regText= findViewById(R.id.regText)
-        name= findViewById(R.id.forNameText)
+        name = findViewById(R.id.forNameText)
 
         updateRegText(nomer + 1)
         val arguments = intent.extras
         if (arguments != null) {
             playersName = Array(arguments.getInt("countOfPlayers")) { String() }
         }
-        println("sizew ${playersName.size}")
+        println(playersName.lastIndex)
     }
 
     @SuppressLint("SetTextI18n")
@@ -37,35 +37,28 @@ class RegestrationActivity : AppCompatActivity() {
     }
 
     fun nextButtonPress(v : View){
-        if (name.text.toString() == ""){
+        if (name.text.toString() == "" || name.text.toString() == " "){
             Toast.makeText(this, "Введите имя", Toast.LENGTH_LONG).show()
+            return
         }
-        else if (nomer < playersName.size){
-            for (n in 0..nomer){ //проверка на одинаковые имена
-                 if (playersName[n] == name.text.toString()){
-                     Toast.makeText(this, "Имена не должны совпадать", Toast.LENGTH_LONG).show()
-                     return
-                 }
-            }
 
-            playersName[nomer] = name.text.toString()
-            nomer++
-            if (nomer == playersName.size)
-            {
-                val intent = Intent(this, GameActivity::class.java)
-                intent.putExtra("players", playersName)
-                startActivity(intent)
-                return
-            }
-            name.text = null
-            updateRegText(nomer + 1)
-            println(nomer)
+        for (n in 0..<nomer){ //проверка на одинаковые имена
+             if (playersName[n] == name.text.toString()){
+                 Toast.makeText(this, "Имена не должны совпадать", Toast.LENGTH_LONG).show()
+                 return
+             }
         }
-        else{
+
+        playersName[nomer] = name.text.toString()
+        nomer++
+        if (nomer > playersName.lastIndex) {
             val intent = Intent(this, GameActivity::class.java)
-            intent.putExtra("players", playersName)
+            intent.putExtra("playerNames", playersName)
             startActivity(intent)
         }
-
+        else {
+            name.text = null
+            updateRegText(nomer + 1)
+        }
     }
 }

@@ -11,70 +11,63 @@ import android.widget.EditText
 
 class GameActivity : AppCompatActivity() {
     private var nomer = 0
-    private lateinit var playersName: Array<String>
-    private lateinit var players : Array<Player>
+    private var players = mutableListOf<Player>()
+
+    private var words = mutableListOf<String>()
 
     private lateinit var letterText : TextView
     private lateinit var whoType : TextView
     private lateinit var mainWord : EditText
+    private lateinit var countOfPlayers: TextView
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game)
 
-        letterText =  findViewById(R.id.wordText)
-        whoType  =findViewById(R.id.whoType)
+        letterText = findViewById(R.id.wordText)
+        whoType = findViewById(R.id.whoType)
         mainWord = findViewById(R.id.mainWordText)
+        countOfPlayers =  findViewById(R.id.lastText)
 
-        val firstWord = "first"
-        letterText.text = firstWord.takeLast(1)
+        val chars = ('a'..'z')
+        letterText.text = chars.random().toString()
 
         val arguments = intent.extras
         if (arguments != null) {
-            playersName = arguments.getStringArray("players")!!
-            players = Array(playersName.size) { Player("none") }
-            for (n in players.indices){
-                players[n].name = playersName[n]
+            val playersName: Array<String> = arguments.getStringArray("playerNames")!!
+            for (n in playersName){
+                players.add(Player(n))
             }
             whoTypeChange()
         }
         else{
             Toast.makeText(this, "ERROR", Toast.LENGTH_SHORT).show()
         }
-        conter()
-
+        counter()
     }
 
     fun enterButtonPress(v : View){
         if (mainWord.text != null){
-            if (mainWord.text.toString().take(1) == letterText.text.toString()){
+            //проверка на то, что первая буква введенного слова подходит
+            if (mainWord.text.toString().startsWith(letterText.text.toString(), true)
+                && mainWord.text.toString().length > 2)
+            {
+                if (words.contains(mainWord.text.toString())){
+                    Toast.makeText(this, "Такое слово уже было", Toast.LENGTH_LONG).show()
+                    return
+                }
                 letterText.text = mainWord.text.toString().takeLast(1)
+                words.add(mainWord.text.toString())
                 mainWord.text = null
+                players[nomer].howMuchWordsType += 1
 
-                var count = 0
-                if (nomer == players.size - 1){
-                    nomer = 0
-                }
-                else{
-                    nomer++
-                }
+                nomer = (nomer + 1) % players.size
+
                 while (players[nomer].lose) {
-                    count++
-                    nomer++
-                    if (nomer == players.size - 1){
-                        nomer = 0
-                    }
-                    whoTypeChange()
+                    nomer = (nomer + 1) % players.size
                 }
-                if (count == 1){
-                    players[nomer].win = true
-                    println("1 сдался")
-                    //тут надо дописать выигрыш
-                }
-                else{
-                    whoTypeChange()
-                }
+                whoTypeChange()
             }
             else{
                 Toast.makeText(this, "Не правильно введено слово", Toast.LENGTH_LONG).show()
@@ -85,39 +78,38 @@ class GameActivity : AppCompatActivity() {
     fun giveupButtonPress(v : View){
         players[nomer].lose = true
         while (players[nomer].lose) {
-            nomer++
-            if (nomer == players.size - 1){
-                nomer = 0
+            nomer = (nomer + 1) % players.size
+        }
+        counter()
+        for(n in players){
+            if (n.win){
+                val intent = Intent(this, WinActivity::class.java)
+                intent.putExtra("whoWin", "Выиграл ${n.name}")
+                startActivity(intent)
+                return
             }
         }
         whoTypeChange()
-        if(conter() == 1){
-            Toast.makeText(this, "END", Toast.LENGTH_LONG).show()
-            for (n in players){
-                if(!n.lose){
-                    val intent = Intent(this, WinActivity::class.java)
-                    intent.putExtra("whoWin", "Выиграл ${n.name}")
-                    startActivity(intent)
-                    break
-                }
-            }
-
-        }
     }
     @SuppressLint("SetTextI18n")
     private fun whoTypeChange(){
         whoType.text = "Сейчас вводит слово - ${players[nomer].name}"
     }
     @SuppressLint("SetTextI18n")
-    private fun conter() : Int{
-        val count : TextView = findViewById(R.id.lastText)
-        var c = 0
+    private fun counter() : Int{
+        var count = 0
         for (n in players){
             if (!n.lose)
-                c++
+                count++
         }
-        count.text = "Игроков осталось $c"
-        return c
+        if(count == 1) {
+            for (n in players) {
+                if (!n.lose)
+                    n.win = true
+            }
+        }
+        countOfPlayers.text = "Игроков осталось $count"
+        return count
     }
 
 }
